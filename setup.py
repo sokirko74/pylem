@@ -122,9 +122,9 @@ class CMakeBuild(build_ext):
 setup(
     name="pylem",
     version="0.0.1",
-    author="Alexey Sokirko",
-    author_email="sokirko@yandex.ru",
-    description="Morphological analysis based on aot.ru dictionaries",
+    author="Dean Moldovan",
+    author_email="dean0x7d@gmail.com",
+    description="A test project using pybind11 and CMake",
     long_description="",
     ext_modules=[CMakeExtension("pylem")],
     cmdclass={"build_ext": CMakeBuild},
