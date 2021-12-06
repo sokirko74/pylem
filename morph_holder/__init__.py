@@ -2,6 +2,7 @@
 import os
 import json
 
+
 class MorphLanguage:
     Russian = 1
     English = 2
@@ -33,4 +34,8 @@ class MorphanHolder:
 
     def is_in_dictionary(self, word):
         r = pylem.is_in_dictionary(self.language, word)
+        return r
+
+    def synthesize(self, word, all_forms=False):
+        r = pylem.synthesize(self.language, word, all_forms)
         return json.loads(r)

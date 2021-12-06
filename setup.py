@@ -122,8 +122,8 @@ class CMakeBuild(build_ext):
 # logic and declaration, and simpler if you include description/version in a file.
 setup(
     name="pylem",
-    version="0.0.1",
-    author="Dean Moldovan",
+    version="0.0.2",
+    author="Alexey Sokirko",
     author_email="sokirko@yandex.ru",
     description="A test project using pybind11 and CMake",
     long_description="",
@@ -132,7 +132,7 @@ setup(
     zip_safe=False,
     extras_require={"test": ["pytest>=6.0"]},
     python_requires=">=3.6",
-    packages=["morph_holder", "Dicts"],
+    packages=["morph_holder", "Dicts", "tests"],
     include_package_data=True,
     package_data={
         "Dicts": ['Morph/English/*.*', 'Morph/Russian/*.*', 'Morph/German/*.*']
