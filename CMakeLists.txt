@@ -6,9 +6,10 @@ declare_cmake_min_version()
 project(pylem)
 
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}")
-set(BUILD_DICTS 1)
-set(DICTS_FOLDER  ${PROJECT_SOURCE_DIR}/Dicts )
+#link_directories("C:\\Program Files\\Python310\\libs")
 
+set(BUILD_DICTS 0)
+set(DICTS_FOLDER  ${PROJECT_SOURCE_DIR}/Dicts )
 add_subdirectory (morph_dict)
 
 add_subdirectory(pybind11)

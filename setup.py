@@ -34,6 +34,7 @@ class CMakeBuild(build_ext):
 
         debug = int(os.environ.get("DEBUG", 0)) if self.debug is None else self.debug
         cfg = "Debug" if debug else "Release"
+        print ("==platform = {}".format(cfg))
 
         # CMake lets you override the generator - we need to check this.
         # Can be set with Conda-Build, for example.
@@ -123,12 +124,17 @@ setup(
     name="pylem",
     version="0.0.1",
     author="Dean Moldovan",
-    author_email="dean0x7d@gmail.com",
+    author_email="sokirko@yandex.ru",
     description="A test project using pybind11 and CMake",
     long_description="",
-    ext_modules=[CMakeExtension("pylem")],
+    ext_modules=[CMakeExtension("pylem", "")],
     cmdclass={"build_ext": CMakeBuild},
     zip_safe=False,
     extras_require={"test": ["pytest>=6.0"]},
     python_requires=">=3.6",
+    packages=["morph_holder", "Dicts"],
+    include_package_data=True,
+    package_data={
+        "Dicts": ['Morph/English/*.*', 'Morph/Russian/*.*', 'Morph/German/*.*']
+    }
 )
