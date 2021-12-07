@@ -121,11 +121,11 @@ class CMakeBuild(build_ext):
 # The information here can also be placed in setup.cfg - better separation of
 # logic and declaration, and simpler if you include description/version in a file.
 setup(
-    name="pylem",
-    version="0.0.2",
+    name="pylem-sokirko",
+    version="0.0.6",
     author="Alexey Sokirko",
     author_email="sokirko@yandex.ru",
-    description="A test project using pybind11 and CMake",
+    description="Morphological analysis, dictionary lemmatization for Russian, German and English",
     long_description="",
     ext_modules=[CMakeExtension("pylem", "")],
     cmdclass={"build_ext": CMakeBuild},
