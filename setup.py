@@ -26,8 +26,8 @@ class CMakeExtension(Extension):
 
 class CMakeBuild(build_ext):
     def build_extension(self, ext):
-        extdir = os.path.abspath(os.path.dirname(self.get_ext_fullpath(ext.name)))
-
+        extdir = os.path.abspath(os.path.join(os.path.dirname(self.get_ext_fullpath(ext.name)), "pylem"))
+        #extdir = os.path.abspath(self.get_ext_fullpath(ext.name))
         # required for auto-detection & inclusion of auxiliary "native" libs
         if not extdir.endswith(os.path.sep):
             extdir += os.path.sep
@@ -121,20 +121,20 @@ class CMakeBuild(build_ext):
 # The information here can also be placed in setup.cfg - better separation of
 # logic and declaration, and simpler if you include description/version in a file.
 setup(
-    name="pylem-sokirko",
-    version="0.0.6",
+    name="pylem",
+    version="0.0.7",
     author="Alexey Sokirko",
     author_email="sokirko@yandex.ru",
     description="Morphological analysis, dictionary lemmatization for Russian, German and English",
     long_description="",
-    ext_modules=[CMakeExtension("pylem", "")],
+    ext_modules=[CMakeExtension("pylem_binary", "")],
     cmdclass={"build_ext": CMakeBuild},
     zip_safe=False,
     extras_require={"test": ["pytest>=6.0"]},
     python_requires=">=3.6",
-    packages=["morph_holder", "Dicts", "tests"],
+    packages=["pylem", "pylem/Dicts", "pylem/morph_holder", "pylem/tests"],
     include_package_data=True,
     package_data={
-        "Dicts": ['Morph/English/*.*', 'Morph/Russian/*.*', 'Morph/German/*.*']
+        "pylem/Dicts": ['Morph/English/*.*', 'Morph/Russian/*.*', 'Morph/German/*.*']
     }
 )

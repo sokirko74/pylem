@@ -1,7 +1,6 @@
-﻿import pylem
-import os
+﻿import os
 import json
-
+from .pylem_binary import *
 
 class MorphLanguage:
     Russian = 1
@@ -25,17 +24,18 @@ class MorphanHolder:
     def __init__(self, language):
         assert MorphLanguage.check_language(language)
         self.language = language
-        path = os.path.join(os.path.dirname(__file__), '../Dicts/Morph', MorphLanguage.GetStrByLanguage(language))
-        ret = pylem.load_morphology(int(language), path)
+        path = os.path.join(os.path.dirname(__file__), 'Dicts/Morph', MorphLanguage.GetStrByLanguage(language))
+        ret = load_morphology(int(language), path)
 
     def lemmatize_json(self, word, all_forms=False):
-        r = pylem.lemmatize_json(self.language, word, all_forms)
+        r = lemmatize_json(self.language, word, all_forms)
         return json.loads(r)
 
     def is_in_dictionary(self, word):
-        r = pylem.is_in_dictionary(self.language, word)
+        r = is_in_dictionary(self.language, word)
         return r
 
     def synthesize(self, word, all_forms=False):
-        r = pylem.synthesize(self.language, word, all_forms)
+        r = synthesize(self.language, word, all_forms)
         return json.loads(r)
+

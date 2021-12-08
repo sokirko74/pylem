@@ -1,4 +1,4 @@
-﻿from morph_holder import MorphanHolder, MorphLanguage
+﻿from pylem import MorphanHolder, MorphLanguage
 import unittest
 
 class TestBasicAnalyze(unittest.TestCase):

@@ -7,10 +7,6 @@
 #define STRINGIFY(x) #x
 #define MACRO_STRINGIFY(x) STRINGIFY(x)
 
-int add(int i, int j) {
-    return i + j;
-}
-
 namespace py = pybind11;
 
 CMorphanHolder EnglishHolder;
@@ -23,7 +19,7 @@ CMorphanHolder& GetHolder(int langua) {
         case morphRussian: return RussianHolder;
         case morphGerman: return GermanHolder;
     }
-    throw std::exception("unknown language");
+    throw std::runtime_error("unknown language");
 }
 
 int load_morphology(int langua, std::string folder) {
@@ -32,7 +28,7 @@ int load_morphology(int langua, std::string folder) {
         GetHolder(langua).m_pGramTab->m_bUseNationalConstants = false;
     }
     catch (CExpc e) {
-        throw std::exception(e.m_strCause.c_str());
+        throw std::runtime_error(e.m_strCause);
     }
     return 1;
 }
@@ -83,14 +79,13 @@ std::string synthesize(int langua, std::string word_form, std::string part_of_sp
 }
 
 
-PYBIND11_MODULE(pylem, m) {
+PYBIND11_MODULE(pylem_binary, m) {
     m.doc() = R"pbdoc()pbdoc";
-    m.def("add", &add, R"pbdoc()pbdoc");
     m.def("load_morphology", &load_morphology, R"pbdoc()pbdoc");
     m.def("lemmatize_json", &lemmatize_json, R"pbdoc()pbdoc");
     m.def("is_in_dictionary", &is_in_dictionary, R"pbdoc()pbdoc");
     m.def("synthesize", &synthesize, R"pbdoc()pbdoc");
-
+  
 #ifdef VERSION_INFO
     m.attr("__version__") = MACRO_STRINGIFY(VERSION_INFO);
 #else

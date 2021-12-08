@@ -1,6 +1,3 @@
 include *.txt
 include *.py
-recursive-include morph_dict *.txt *.cpp *.h *.mrd *.tab *.mwz  *.cmake *.hpp
-recursive-include pybind11 *.txt *.cpp *.h *.cmake
-recursive-include src *.txt *.cpp *.h
-recursive-include Dicts *.py
+recursive-include pylem *.txt *.cpp *.h *.mrd *.tab *.mwz  *.cmake *.hpp *.py
