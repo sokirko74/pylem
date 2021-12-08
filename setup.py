@@ -27,10 +27,12 @@ class CMakeExtension(Extension):
 class CMakeBuild(build_ext):
     def build_extension(self, ext):
         extdir = os.path.abspath(os.path.join(os.path.dirname(self.get_ext_fullpath(ext.name)), "pylem"))
+        extdir = extdir.replace('\\', '/')
         #extdir = os.path.abspath(self.get_ext_fullpath(ext.name))
+        
         # required for auto-detection & inclusion of auxiliary "native" libs
-        if not extdir.endswith(os.path.sep):
-            extdir += os.path.sep
+        #if not extdir.endswith(os.path.sep):
+        #    extdir += os.path.sep
 
         debug = int(os.environ.get("DEBUG", 0)) if self.debug is None else self.debug
         cfg = "Debug" if debug else "Release"
@@ -132,9 +134,8 @@ setup(
     zip_safe=False,
     extras_require={"test": ["pytest>=6.0"]},
     python_requires=">=3.6",
-    packages=["pylem", "pylem/Dicts", "pylem/morph_holder", "pylem/tests"],
-    include_package_data=True,
+    packages=["pylem", "pylem/Dicts",  "pylem/tests"],
     package_data={
-        "pylem/Dicts": ['Morph/English/*.*', 'Morph/Russian/*.*', 'Morph/German/*.*']
+        "pylem/Dicts": ['Morph/*/*.*']
     }
 )
