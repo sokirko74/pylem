@@ -79,12 +79,33 @@ std::string synthesize(int langua, std::string word_form, std::string part_of_sp
 }
 
 
+map<string, MorphoWizard*> WizardsByPath;
+
+bool load_mwz_project(std::string mwz_project_path) {
+    MorphoWizard* wizard = new MorphoWizard(); // I do not delete wizards in this project, it is not important
+    wizard.load_wizard(mwz_project_path, "guest", false);
+    WizardsByPath[mwz_project_path] = wizard;
+    return true;
+}
+/*
+void predict_lemm(std::string mwz_project_path, const std::string& lemm, const int preffer_suf_len, const int minimal_frequence)
+{
+    WizardsByPath[mwz_project_path]->predict_lemm(lemm,  preffer_suf_len, minimal_frequence, true);
+    for
+    			const CPredictSuffix& S = *GetWizard()->m_CurrentPredictedParadigms[ind];
+			const CFlexiaModel& P = GetWizard()->m_FlexiaModels[S.m_FlexiaModelNo];
+
+}
+*/
+
 PYBIND11_MODULE(pylem_binary, m) {
     m.doc() = R"pbdoc()pbdoc";
     m.def("load_morphology", &load_morphology, R"pbdoc()pbdoc");
     m.def("lemmatize_json", &lemmatize_json, R"pbdoc()pbdoc");
     m.def("is_in_dictionary", &is_in_dictionary, R"pbdoc()pbdoc");
     m.def("synthesize", &synthesize, R"pbdoc()pbdoc");
+    m.def("load_mwz_project", &load_mwz_project, R"pbdoc()pbdoc");
+
   
 #ifdef VERSION_INFO
     m.attr("__version__") = MACRO_STRINGIFY(VERSION_INFO);
