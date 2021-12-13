@@ -87,35 +87,10 @@ std::map<std::string, MorphoWizard*> WizardsByPath;
 
 bool load_mwz_project(std::string mwz_project_path) {
     MorphoWizard* wizard = new MorphoWizard(); // I do not delete wizards in this project, it is not important
-    wizard->load_wizard(mwz_project_path, "guest", true);
+    wizard->load_wizard(mwz_project_path, "guest", true, false);
     WizardsByPath[mwz_project_path] = wizard;
     return true;
 }
-
-struct TLemmaPrediction {
-    TLemmaPrediction(const std::string& lemma, size_t flexiaModelNo, const std::string& commonGrammems, size_t freq) :
-        Lemma(lemma),
-        FlexiaModelNo(flexiaModelNo),
-        CommonGrammems(commonGrammems),
-        Freq(freq) {};
-
-    void setLemma(const std::string& lemma) { Lemma = lemma; }
-    const std::string& getLemma() const { return Lemma; }
-
-    void setFlexiaModelNo(const size_t& i) { FlexiaModelNo = i; }
-    const size_t& getFlexiaModelNo() const { return FlexiaModelNo; }
-
-    void setCommonGrammems(const std::string& g) { CommonGrammems = g; }
-    const std::string& getCommonGrammems() const { return CommonGrammems; }
-
-    void setFreq(const size_t& i) { Freq = i; }
-    const size_t& getFreq() const { return Freq; }
-
-    std::string Lemma;
-    size_t FlexiaModelNo;
-    std::string CommonGrammems;
-    size_t Freq;
-};
 
 PYBIND11_MAKE_OPAQUE(std::vector<CPredictSuffix>);
 
@@ -127,20 +102,20 @@ std::vector<CPredictSuffix> predict_lemm(std::string mwz_project_path, const std
     auto wizard = WizardsByPath[mwz_project_path];
     auto lemm_single_byte = convert_from_utf8(lemm.c_str(), wizard->m_Language);
     lemm_single_byte = RmlMakeUpper(lemm_single_byte, wizard->m_Language);
-    std::cout << "lemm=" << lemm << "\n";
-    auto predicted = wizard->m_Predictor.predict_lemm(lemm_single_byte, suf_len, minimal_frequence, true, TLemmPredictSortEnum::Freq);
+    auto predicted = wizard->m_Predictor.predict_lemm(lemm_single_byte, suf_len, 
+        minimal_frequence, true, TLemmPredictSortEnum::Freq);
     return predicted;
 }
 
-
 PYBIND11_MODULE(pylem_binary, m) {
-    py::class_<CPredictSuffix>(m, "LemmaPrediction")
+    py::class_<CPredictSuffix>(m, "PredictSuffix")
         .def(py::init<>())
         .def("getCommonGrammems", &CPredictSuffix::getCommonGrammemsUtf8)
         .def("getFlexiaModelNo", &CPredictSuffix::getFlexiaModelNo)
-        .def("getFreq", &CPredictSuffix::getFreq);
+        .def("getFreq", &CPredictSuffix::getFreq)
+        .def("getSlf", &CPredictSuffix::getSLF_Utf8);
 
-    py::bind_vector<std::vector<CPredictSuffix>>(m, "LemmaPredictVector");
+    py::bind_vector<std::vector<CPredictSuffix>>(m, "PredictSuffixVector");
 
     m.doc() = R"pbdoc()pbdoc";
     m.def("load_morphology", &load_morphology, R"pbdoc()pbdoc");

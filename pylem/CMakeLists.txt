@@ -9,8 +9,14 @@ IF (NOT DEFINED MSVC)
     set( CMAKE_C_FLAGS  "${CMAKE_C_FLAGS} -fPIC" )
 endif()
 
-set(BUILD_DICTS 0)
-message("==== CMAKE_LIBRARY_OUTPUT_DIRECTORY = ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}")
+set(BUILD_DICTS 1)
+
+if (EXISTS  ${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists.my)
+    message ("use " ${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists.my)
+    include (${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists.my)
+endif()
+
+
 set(DICTS_FOLDER  ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/Dicts )
 add_subdirectory (morph_dict)
 
