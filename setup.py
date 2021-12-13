@@ -5,6 +5,9 @@ import sys
 
 from setuptools import Extension, setup
 from setuptools.command.build_ext import build_ext
+from pathlib import Path
+this_directory = Path(__file__).parent
+long_description = (this_directory / "README.md").read_text()
 
 # Convert distutils Windows platform specifiers to CMake -A arguments
 PLAT_TO_CMAKE = {
@@ -43,7 +46,7 @@ class CMakeBuild(build_ext):
         cmake_generator = os.environ.get("CMAKE_GENERATOR", "")
 
         # Set Python_EXECUTABLE instead if you use PYBIND11_FINDPYTHON
-        # EXAMPLE_VERSION_INFO shows you how to pass a value into the C++ code
+        # PYLEM_VERSION_INFO shows you how to pass a value into the C++ code
         # from Python.
         cmake_args = [
             f"-DCMAKE_LIBRARY_OUTPUT_DIRECTORY={extdir}",
@@ -57,7 +60,7 @@ class CMakeBuild(build_ext):
             cmake_args += [item for item in os.environ["CMAKE_ARGS"].split(" ") if item]
 
         # In this example, we pass in the version to C++. You might not need to.
-        cmake_args += [f"-DEXAMPLE_VERSION_INFO={self.distribution.get_version()}"]
+        cmake_args += [f"-DPYLEM_VERSION_INFO={self.distribution.get_version()}"]
 
         if self.compiler.compiler_type != "msvc":
             # Using Ninja-build since it a) is available as a wheel and b)
@@ -124,11 +127,12 @@ class CMakeBuild(build_ext):
 # logic and declaration, and simpler if you include description/version in a file.
 setup(
     name="pylem",
-    version="0.0.7",
+    version="0.0.9",
     author="Alexey Sokirko",
     author_email="sokirko@yandex.ru",
     description="Morphological analysis, dictionary lemmatization for Russian, German and English",
-    long_description="",
+    long_description_content_type='text/markdown',
+    long_description=long_description,
     ext_modules=[CMakeExtension("pylem_binary", "")],
     cmdclass={"build_ext": CMakeBuild},
     zip_safe=False,

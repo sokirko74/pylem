@@ -9,7 +9,7 @@ IF (NOT DEFINED MSVC)
     set( CMAKE_C_FLAGS  "${CMAKE_C_FLAGS} -fPIC" )
 endif()
 
-set(BUILD_DICTS 1)
+set(BUILD_DICTS 0)
 message("==== CMAKE_LIBRARY_OUTPUT_DIRECTORY = ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}")
 set(DICTS_FOLDER  ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/Dicts )
 add_subdirectory (morph_dict)
@@ -21,10 +21,14 @@ pybind11_add_module(${PROJECT_NAME} binding/main.cpp)
 
 target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_17)
 
-# EXAMPLE_VERSION_INFO is defined by setup.py and passed into the C++ code as a
+# PYLEM_VERSION_INFO is defined by setup.py and passed into the C++ code as a
 # define (VERSION_INFO) here.
+if (NOT DEFINED PYLEM_VERSION_INFO)
+    set (PYLEM_VERSION_INFO "dev")
+endif()
+
 target_compile_definitions(${PROJECT_NAME}
-                           PRIVATE VERSION_INFO=${EXAMPLE_VERSION_INFO})
+                           PRIVATE VERSION_INFO=${PYLEM_VERSION_INFO})
 
 target_link_libraries(${PROJECT_NAME} PRIVATE
         ${PYTHON_LIBRARIES} LemmatizerBaseLib

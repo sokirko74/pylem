@@ -1,6 +1,6 @@
 ﻿import os
 import json
-from .pylem_binary import *
+from pylem_binary import *
 
 
 class MorphLanguage:
@@ -74,6 +74,11 @@ class MorphanHolder:
 
 class MorphSourceDictHolder:
     def __init__(self, mwz_path):
+        self.mwz_path = mwz_path
         if not os.path.exists(mwz_path):
             raise OSError("cannot find mwz project {}".format(mwz_path))
-        load_mwz_project(mwz_path)
+        load_mwz_project(self.mwz_path)
+
+    def predict_lemm(self, word, suf_len: int, minimal_frequence: int):
+        predicted = predict_lemm(self.mwz_path, word, suf_len, minimal_frequence)
+        return predicted

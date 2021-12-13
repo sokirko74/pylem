@@ -1,6 +1,10 @@
 #include <pybind11/pybind11.h>
+#include <pybind11/stl_bind.h>
+
 #include <iostream>
 #include "morph_dict/LemmatizerBaseLib/MorphanHolder.h"
+#include "morph_dict/MorphWizardLib/wizard.h"
+
 #include <stdio.h>
 #include <exception>
 
@@ -79,33 +83,72 @@ std::string synthesize(int langua, std::string word_form, std::string part_of_sp
 }
 
 
-map<string, MorphoWizard*> WizardsByPath;
+std::map<std::string, MorphoWizard*> WizardsByPath;
 
 bool load_mwz_project(std::string mwz_project_path) {
     MorphoWizard* wizard = new MorphoWizard(); // I do not delete wizards in this project, it is not important
-    wizard.load_wizard(mwz_project_path, "guest", false);
+    wizard->load_wizard(mwz_project_path, "guest", true);
     WizardsByPath[mwz_project_path] = wizard;
     return true;
 }
-/*
-void predict_lemm(std::string mwz_project_path, const std::string& lemm, const int preffer_suf_len, const int minimal_frequence)
-{
-    WizardsByPath[mwz_project_path]->predict_lemm(lemm,  preffer_suf_len, minimal_frequence, true);
-    for
-    			const CPredictSuffix& S = *GetWizard()->m_CurrentPredictedParadigms[ind];
-			const CFlexiaModel& P = GetWizard()->m_FlexiaModels[S.m_FlexiaModelNo];
 
+struct TLemmaPrediction {
+    TLemmaPrediction(const std::string& lemma, size_t flexiaModelNo, const std::string& commonGrammems, size_t freq) :
+        Lemma(lemma),
+        FlexiaModelNo(flexiaModelNo),
+        CommonGrammems(commonGrammems),
+        Freq(freq) {};
+
+    void setLemma(const std::string& lemma) { Lemma = lemma; }
+    const std::string& getLemma() const { return Lemma; }
+
+    void setFlexiaModelNo(const size_t& i) { FlexiaModelNo = i; }
+    const size_t& getFlexiaModelNo() const { return FlexiaModelNo; }
+
+    void setCommonGrammems(const std::string& g) { CommonGrammems = g; }
+    const std::string& getCommonGrammems() const { return CommonGrammems; }
+
+    void setFreq(const size_t& i) { Freq = i; }
+    const size_t& getFreq() const { return Freq; }
+
+    std::string Lemma;
+    size_t FlexiaModelNo;
+    std::string CommonGrammems;
+    size_t Freq;
+};
+
+PYBIND11_MAKE_OPAQUE(std::vector<CPredictSuffix>);
+
+std::vector<CPredictSuffix> predict_lemm(std::string mwz_project_path, const std::string& lemm, const int suf_len, const int minimal_frequence)
+{
+    if (WizardsByPath.find(mwz_project_path) == WizardsByPath.end()) {
+        throw std::runtime_error(Format("%s is not loaded", mwz_project_path.c_str()));
+    }
+    auto wizard = WizardsByPath[mwz_project_path];
+    auto lemm_single_byte = convert_from_utf8(lemm.c_str(), wizard->m_Language);
+    lemm_single_byte = RmlMakeUpper(lemm_single_byte, wizard->m_Language);
+    std::cout << "lemm=" << lemm << "\n";
+    auto predicted = wizard->m_Predictor.predict_lemm(lemm_single_byte, suf_len, minimal_frequence, true, TLemmPredictSortEnum::Freq);
+    return predicted;
 }
-*/
+
 
 PYBIND11_MODULE(pylem_binary, m) {
+    py::class_<CPredictSuffix>(m, "LemmaPrediction")
+        .def(py::init<>())
+        .def("getCommonGrammems", &CPredictSuffix::getCommonGrammemsUtf8)
+        .def("getFlexiaModelNo", &CPredictSuffix::getFlexiaModelNo)
+        .def("getFreq", &CPredictSuffix::getFreq);
+
+    py::bind_vector<std::vector<CPredictSuffix>>(m, "LemmaPredictVector");
+
     m.doc() = R"pbdoc()pbdoc";
     m.def("load_morphology", &load_morphology, R"pbdoc()pbdoc");
     m.def("lemmatize_json", &lemmatize_json, R"pbdoc()pbdoc");
     m.def("is_in_dictionary", &is_in_dictionary, R"pbdoc()pbdoc");
     m.def("synthesize", &synthesize, R"pbdoc()pbdoc");
     m.def("load_mwz_project", &load_mwz_project, R"pbdoc()pbdoc");
-
+    m.def("predict_lemm", &predict_lemm, R"pbdoc()pbdoc");
   
 #ifdef VERSION_INFO
     m.attr("__version__") = MACRO_STRINGIFY(VERSION_INFO);

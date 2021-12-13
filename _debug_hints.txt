@@ -1,0 +1,41 @@
+to debug under Visual studio
+1.  mkdir build_vs
+2.  cd build_vs
+3.  cmake ..
+4.  open sln in Visual Studio and compile it
+5.  Copy a.py to C:\tmp\pylem\build_vs\pylem\Debug 
+
+a:py
+
+import os
+from pylem_binary import *
+
+class MorphSourceDictHolder:
+    def __init__(self, mwz_path):
+        self.mwz_path = mwz_path
+        if not os.path.exists(mwz_path):
+            raise OSError("cannot find mwz project {}".format(mwz_path))
+        load_mwz_project(self.mwz_path)
+
+    def predict_lemm(self, word, suf_len: int, minimal_frequence: int):
+        predicted = predict_lemm(self.mwz_path, word, suf_len, minimal_frequence)
+        return predicted
+
+
+def surname_predict():
+    input("press enter")
+    path = 'c:/tmp/pylem/pylem/morph_dict/data/Russian/project.mwz'
+    mwz_path = os.path.join(os.path.dirname(__file__), path)
+    holder = MorphSourceDictHolder(mwz_path)
+    r = holder.predict_lemm("асокирко", 3, 2)
+    print(r)
+    print(len(r))
+
+if __name__ == '__main__':
+    surname_predict()
+
+and  C:\tmp\pylem\build_vs\pylem\Debug\pylem_binary.py
+
+6.  
+
+ 

@@ -10,8 +10,12 @@
             if i.startswith(library_name) and (i.endswith('.pyd') or i.endswith('.so')):
                 return i
         raise Exception ("no binary library found to load")
-    __file__ = pkg_resources.resource_filename(library_name, find_compiled_library())
-    __loader__ = None; del __bootstrap__, __loader__
+    compiled_lib_path = find_compiled_library()
+    print ("compiled_lib_path = {}".format(compiled_lib_path))
+    print(sys.modules)
+    __file__ = pkg_resources.resource_filename(library_name, compiled_lib_path)
+    __loader__ = None; 
+    del __bootstrap__, __loader__
     spec = importlib.util.spec_from_file_location(library_name, __file__)
     mod = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(mod)
