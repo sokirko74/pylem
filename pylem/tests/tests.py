@@ -8,6 +8,11 @@ class TestBasicAnalyze(unittest.TestCase):
        res = holder.is_in_dictionary("мама")
        self.assertTrue(res)
 
+    def test_asokirko(self):
+       holder = MorphanHolder(MorphLanguage.Russian)
+       res = holder.is_in_dictionary("этогослованнет")
+       self.assertFalse(res)
+
     def test_mother(self):
        holder = MorphanHolder(MorphLanguage.English)
        res = holder.is_in_dictionary("mother")

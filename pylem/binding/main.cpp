@@ -113,6 +113,7 @@ PYBIND11_MODULE(pylem_binary, m) {
         .def("getCommonGrammems", &CPredictSuffix::getCommonGrammemsUtf8)
         .def("getFlexiaModelNo", &CPredictSuffix::getFlexiaModelNo)
         .def("getFreq", &CPredictSuffix::getFreq)
+        .def("getWiktionaryTemplateRef", &CPredictSuffix::getWiktionaryTemplateRef)
         .def("getSlf", &CPredictSuffix::getSLF_Utf8);
 
     py::bind_vector<std::vector<CPredictSuffix>>(m, "PredictSuffixVector");

@@ -1,6 +1,6 @@
 ﻿import os
 import json
-from pylem_binary import *
+from .pylem_binary import *
 
 
 class MorphLanguage:
