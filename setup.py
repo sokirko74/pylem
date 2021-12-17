@@ -127,7 +127,7 @@ class CMakeBuild(build_ext):
 # logic and declaration, and simpler if you include description/version in a file.
 setup(
     name="pylem",
-    version="0.0.9",
+    version="0.0.12",
     author="Alexey Sokirko",
     author_email="sokirko@yandex.ru",
     description="Morphological analysis, dictionary lemmatization for Russian, German and English",
@@ -138,8 +138,11 @@ setup(
     zip_safe=False,
     extras_require={"test": ["pytest>=6.0"]},
     python_requires=">=3.6",
-    packages=["pylem", "pylem/Dicts",  "pylem/tests"],
+    packages=["pylem", "pylem/Dicts",  "pylem/tests", 
+        "pylem/morph_dict/data"
+    ],
     package_data={
-        "pylem/Dicts": ['Morph/*/*.*']
+        "pylem/Dicts": ['Morph/*/*.*'],
+        "pylem/morph_dict/data": ['*/*.*'],
     }
 )
