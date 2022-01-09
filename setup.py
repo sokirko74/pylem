@@ -127,7 +127,7 @@ class CMakeBuild(build_ext):
 # logic and declaration, and simpler if you include description/version in a file.
 setup(
     name="pylem",
-    version="0.0.15",
+    version="0.0.16",
     author="Alexey Sokirko",
     author_email="sokirko@yandex.ru",
     description="Morphological analysis, dictionary lemmatization for Russian, German and English",

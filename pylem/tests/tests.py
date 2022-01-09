@@ -28,7 +28,8 @@ class TestBasicAnalyze(unittest.TestCase):
 class TestMorphInfoJson(unittest.TestCase):
     def test_papa(self):
         holder = MorphanHolder(MorphLanguage.Russian)
-        canon = [{'commonGrammems': 'anim', 'found': True, 'morphInfo': 'N mas,nom,sg', 'wordForm': 'ПАПА'}]
+        canon = [{'commonGrammems': 'anim', 'found': True, 'morphInfo': 'N mas,nom,sg', 'wordForm': 'ПАПА',
+                  'wordWeight': 614, 'homonymWeight': 0}]
         res = holder.lemmatize_json("папа")
         self.assertEqual(len(canon), len(res))
         self.assertDictEqual(canon[0], res[0])
@@ -38,8 +39,21 @@ class TestSynthesis(unittest.TestCase):
     def test_stul(self):
         holder = MorphanHolder(MorphLanguage.Russian)
         answer = holder.synthesize("мама", "N fem,sg,gen")
+        print(answer)
         self.assertEqual(len(answer['forms']), 1)
         self.assertEqual("МАМЫ", answer['forms'][0])
+
+
+class TestWordWeight(unittest.TestCase):
+    def test_vanya(self):
+        holder = MorphanHolder(MorphLanguage.Russian)
+        res = list(holder.lemmatize("иван"))
+        self.assertGreater(res[0].word_weight, 0)
+
+    def test_unknown(self):
+        holder = MorphanHolder(MorphLanguage.Russian)
+        res = list(holder.lemmatize("ииван"))
+        self.assertEqual(res[0].word_weight, 0)
 
 
 if __name__ == '__main__':

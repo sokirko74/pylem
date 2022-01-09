@@ -29,9 +29,10 @@ CMorphanHolder& GetHolder(int langua) {
 int load_morphology(int langua, std::string folder) {
     try {
         GetHolder(langua).LoadLemmatizer((MorphLanguageEnum)langua, folder);
-        GetHolder(langua).m_pGramTab->m_bUseNationalConstants = false;
+        GetHolder(langua).m_pGramTab->SetUseNationalConstants(false);
     }
     catch (CExpc e) {
+        std::cerr << e.m_strCause << "\n";
         throw std::runtime_error(e.m_strCause);
     }
     return 1;
