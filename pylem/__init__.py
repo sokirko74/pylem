@@ -7,10 +7,12 @@ class MorphLanguage:
     Russian = 1
     English = 2
     German = 3
+    FioDisclosures = 7
 
     @staticmethod
     def check_language(langua):
-        return langua == MorphLanguage.Russian or langua == MorphLanguage.English or langua == MorphLanguage.German
+        return langua == MorphLanguage.Russian or langua == MorphLanguage.English or langua == MorphLanguage.German or \
+        langua == MorphLanguage.FioDisclosures
 
     @staticmethod
     def GetStrByLanguage(langua):
@@ -20,6 +22,8 @@ class MorphLanguage:
             return "English"
         elif langua == MorphLanguage.German:
             return "German"
+        elif langua == MorphLanguage.FioDisclosures:
+            return "FIO_DISCLOSURES"
         else:
             return "unknown"
 
@@ -38,11 +42,15 @@ class LemmaInfo:
 
 class MorphanHolder:
 
-    def __init__(self, langua):
+    def __init__(self, langua, folder=None):
         assert MorphLanguage.check_language(langua)
         self.language = langua
-        path = os.path.join(os.path.dirname(__file__), 'Dicts/Morph', MorphLanguage.GetStrByLanguage(langua))
-        ret = load_morphology(int(langua), path)
+        if folder is None:
+            path = os.path.join(os.path.dirname(__file__), 'Dicts/Morph', MorphLanguage.GetStrByLanguage(langua))
+        else:
+            path = folder
+            assert os.path.exists(path)
+        load_morphology(int(langua), path)
 
     def lemmatize_json(self, word, all_forms=False):
         r = lemmatize_json(self.language, word, all_forms)
@@ -77,6 +85,12 @@ class MorphanHolder:
         r = synthesize(self.language, word, all_forms)
         return json.loads(r)
 
+    def correct_misspell(self, word):
+        r = correct_misspell(self.language, word)
+        result = list()
+        for x in json.loads(r):
+            result.append(x['correctedWord'])
+        return result
 
 class MorphSourceDictHolder:
     def __init__(self, mwz_path):

@@ -127,7 +127,7 @@ class CMakeBuild(build_ext):
 # logic and declaration, and simpler if you include description/version in a file.
 setup(
     name="pylem",
-    version="0.0.16",
+    version="0.0.18",
     author="Alexey Sokirko",
     author_email="sokirko@yandex.ru",
     description="Morphological analysis, dictionary lemmatization for Russian, German and English",
@@ -136,6 +136,8 @@ setup(
     ext_modules=[CMakeExtension("pylem_binary", "")],
     cmdclass={"build_ext": CMakeBuild},
     zip_safe=False,
+    url="http://www.aot.ru",
+    license="MIT",
     extras_require={"test": ["pytest>=6.0"]},
     python_requires=">=3.6",
     packages=["pylem", "pylem/Dicts",  "pylem/tests", 

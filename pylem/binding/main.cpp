@@ -16,12 +16,15 @@ namespace py = pybind11;
 CMorphanHolder EnglishHolder;
 CMorphanHolder RussianHolder;
 CMorphanHolder GermanHolder;
+CMorphanHolder FioDisclosureHolder;
+
 
 CMorphanHolder& GetHolder(int langua) {
     switch (langua) {
         case morphEnglish: return EnglishHolder;
         case morphRussian: return RussianHolder;
         case morphGerman: return GermanHolder;
+        case morphFioDisclosures: return FioDisclosureHolder;
     }
     throw std::runtime_error("unknown language");
 }
@@ -42,6 +45,20 @@ std::string lemmatize_json(int langua, std::string word_form, bool allForms) {
     word_form = convert_from_utf8(word_form.c_str(), GetHolder(langua).m_CurrentLanguage);
     return GetHolder(langua).LemmatizeJson(word_form.c_str(), allForms, true, true);
 }
+
+std::string correct_misspell(int langua, std::string word_form) {
+    word_form = convert_from_utf8(word_form.c_str(), GetHolder(langua).m_CurrentLanguage);
+    auto r = GetHolder(langua).CorrectMisspelledWord(word_form);
+    nlohmann::json result = nlohmann::json::array();
+    for (auto a: r) {
+        auto c = nlohmann::json::object();
+        c["correctedWord"] = a.CorrectedString;
+        c["stringDistance"] = a.StringDistance;
+        result.push_back(c);
+    }
+    return result.dump();
+}
+
 
 bool is_in_dictionary(int langua, std::string word_form) {
     word_form = convert_from_utf8(word_form.c_str(), (MorphLanguageEnum)langua);
@@ -126,7 +143,8 @@ PYBIND11_MODULE(pylem_binary, m) {
     m.def("synthesize", &synthesize, R"pbdoc()pbdoc");
     m.def("load_mwz_project", &load_mwz_project, R"pbdoc()pbdoc");
     m.def("predict_lemm", &predict_lemm, R"pbdoc()pbdoc");
-  
+    m.def("correct_misspell", &correct_misspell, R"pbdoc()pbdoc");
+
 #ifdef VERSION_INFO
     m.attr("__version__") = MACRO_STRINGIFY(VERSION_INFO);
 #else

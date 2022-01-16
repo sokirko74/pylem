@@ -39,7 +39,6 @@ class TestSynthesis(unittest.TestCase):
     def test_stul(self):
         holder = MorphanHolder(MorphLanguage.Russian)
         answer = holder.synthesize("мама", "N fem,sg,gen")
-        print(answer)
         self.assertEqual(len(answer['forms']), 1)
         self.assertEqual("МАМЫ", answer['forms'][0])
 
